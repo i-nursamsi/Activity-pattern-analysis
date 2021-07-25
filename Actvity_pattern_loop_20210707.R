@@ -1,7 +1,7 @@
 #### Compare Activity Patterns of single-species in degraded vs non-degraded habitats. 
 ### Create a loop to test all relevant species
-## Zachary Amir
-# z.amir@uq.edu.au
+## ILYAS NURSAMSI
+
 
 
 library(tidyverse)
