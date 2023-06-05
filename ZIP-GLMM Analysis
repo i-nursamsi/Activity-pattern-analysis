@@ -14,7 +14,7 @@ library(merTools); library(lattice); library(sjlabelled); library(ggeffects);lib
 #====================   EXTRACT PRESENCE/ABSENCE DATA   ====================
 
 
-# Extract occurrence records within range
+# Extract occurrence records within ranges
 All_sp_data = read.csv("Full_Data_by_Survey_n.0.NA_site2_20211025.csv")
 my_species= 'Manis_javanica' #name your species
 My_sp_data_with_NAs = All_sp_data[All_sp_data$Species == my_species,]
