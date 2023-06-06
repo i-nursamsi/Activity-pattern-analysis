@@ -237,53 +237,53 @@ ModSel
 mod_rank=1
 ### extract best univariate model
 plot_Uni_model_from_ModSel=function(mod_rank){
-mod_name=ModSel[mod_rank,1]
-mod=mods_list[empty$Model==mod_name][[1]] 
-covariate=rownames(summary(mod)$coef_table)[2]
-sum_mod=summary(mod)
-
-# get ZIP model preditions 
-mod_pred=ggpredict(mod, terms = covariate, condition = c(effort_log_scale = median(Data_No_SG$effort_log_scale)))
-
-# only run this for quadratic
-mod=mods_MV_list$Elevation2
-covariate="AvgElevation20K_scale"
-mod_pred=ggpredict(mod, terms = "AvgElevation20K_scale [all]", condition = c(effort_log_scale = median(Data_No_SG$effort_log_scale)))
-
-############################
-#backtransform scaled x-axis
-OG_covariate=gsub("_scale","",covariate)
-Mean=mean(na.exclude(Data_No_SG[,OG_covariate])); Sd=sd(na.exclude(Data_No_SG[,OG_covariate]))
-mod_pred$covar_back_trans= (mod_pred$x*Sd) + Mean
-mod_pred_backtrans=as.data.frame(cbind(mod_pred[[1]],mod_pred[[2]],mod_pred[[3]],mod_pred[[4]],mod_pred[[5]],mod_pred[[6]],mod_pred[[7]]))
-names(mod_pred_backtrans)=colnames(mod_pred);
-#str(mod_pred_backtrans)
-
-#################
-####### dashed line for non-significant
-if(summary(mod_pred_backtrans)$coef_table[2,"p-value"] > 0.05){
-  line_type = "dashed"
-  line_color = "gray40"}else{
-    line_type = "solid"
-    line_color = "black" }
-Data_No_SG$Cols = ifelse(Data_No_SG$records > 0, "blue", "darkred")
-Data_No_SG$dotshape = ifelse(Data_No_SG$records > 0, "19", "1")
-plot_name=
-  ggplot(mod_pred_backtrans, aes(y=predicted+1, x=covar_back_trans)) + 
-  geom_ribbon(aes(ymin = conf.low+1, ymax = conf.high+1), alpha = 0.15)+ # errors not working atm
-  geom_line(size=1) +#geom_line(linetype=line_type, size=1, color = line_color) +
-  geom_jitter(data = Data_No_SG, aes(x = Data_No_SG[,OG_covariate], y = records+1, pch=dotshape,colour=Cols, alpha =.5,size=1),cex=1.2,width = .05, height = .05)+
-  coord_cartesian(ylim = c(.9, max(Data_No_SG$records)),xlim = c(min(Data_No_SG[,OG_covariate]), max(Data_No_SG[,OG_covariate])))+
-  scale_color_identity()+ scale_shape_manual(name = "Captures:", values = c(1, 19))+
-  labs(x = OG_covariate, y = "Number of captures + 1")+
-  theme(axis.title = element_text(size = 18,color='black'), axis.text = element_text(size = 14,color='black'),
-        legend.position = "none",
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
-   scale_y_log10() #+ scale_x_log10()
-print(sum_mod)
-return(plot_name)
-plot_name
+  mod_name=ModSel[mod_rank,1]
+  mod=mods_list[empty$Model==mod_name][[1]] 
+  covariate=rownames(summary(mod)$coef_table)[2]
+  sum_mod=summary(mod)
+  
+  # get ZIP model preditions 
+  mod_pred=ggpredict(mod, terms = covariate, condition = c(effort_log_scale = median(Data_No_SG$effort_log_scale)))
+  
+  # only run this for quadratic
+  mod=mods_MV_list$Elevation2
+  covariate="AvgElevation20K_scale"
+  mod_pred=ggpredict(mod, terms = "AvgElevation20K_scale [all]", condition = c(effort_log_scale = median(Data_No_SG$effort_log_scale)))
+  
+  ############################
+  #backtransform scaled x-axis
+  OG_covariate=gsub("_scale","",covariate)
+  Mean=mean(na.exclude(Data_No_SG[,OG_covariate])); Sd=sd(na.exclude(Data_No_SG[,OG_covariate]))
+  mod_pred$covar_back_trans= (mod_pred$x*Sd) + Mean
+  mod_pred_backtrans=as.data.frame(cbind(mod_pred[[1]],mod_pred[[2]],mod_pred[[3]],mod_pred[[4]],mod_pred[[5]],mod_pred[[6]],mod_pred[[7]]))
+  names(mod_pred_backtrans)=colnames(mod_pred);
+  #str(mod_pred_backtrans)
+  
+  #################
+  ####### dashed line for non-significant
+  if(summary(mod_pred_backtrans)$coef_table[2,"p-value"] > 0.05){
+    line_type = "dashed"
+    line_color = "gray40"}else{
+      line_type = "solid"
+      line_color = "black" }
+  Data_No_SG$Cols = ifelse(Data_No_SG$records > 0, "blue", "darkred")
+  Data_No_SG$dotshape = ifelse(Data_No_SG$records > 0, "19", "1")
+  plot_name=
+    ggplot(mod_pred_backtrans, aes(y=predicted+1, x=covar_back_trans)) + 
+    geom_ribbon(aes(ymin = conf.low+1, ymax = conf.high+1), alpha = 0.15)+ # errors not working atm
+    geom_line(size=1) +#geom_line(linetype=line_type, size=1, color = line_color) +
+    geom_jitter(data = Data_No_SG, aes(x = Data_No_SG[,OG_covariate], y = records+1, pch=dotshape,colour=Cols, alpha =.5,size=1),cex=1.2,width = .05, height = .05)+
+    coord_cartesian(ylim = c(.9, max(Data_No_SG$records)),xlim = c(min(Data_No_SG[,OG_covariate]), max(Data_No_SG[,OG_covariate])))+
+    scale_color_identity()+ scale_shape_manual(name = "Captures:", values = c(1, 19))+
+    labs(x = OG_covariate, y = "Number of captures + 1")+
+    theme(axis.title = element_text(size = 18,color='black'), axis.text = element_text(size = 14,color='black'),
+          legend.position = "none",
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    scale_y_log10() #+ scale_x_log10()
+  print(sum_mod)
+  return(plot_name)
+  plot_name
 }
 
 dir.create(file.path(getwd(),paste("glmmZIPfigs",my_species)), recursive = TRUE)
@@ -304,7 +304,7 @@ plot_Uni_model_from_ModSel(6)
 for(i in 1:dim(ModSel)[1]){
   plot_Uni_model_from_ModSel(i)
   print_it(i)
-  }
+}
 # they will stop printing once they hit an error at the Null model
 
 
@@ -464,7 +464,7 @@ plot_mod3
 # Choose model
 
 ### extract best univariate model
-  MVmod_name=ModSel_full[1,1]
+MVmod_name=ModSel_full[1,1]
 MVmod=mods_MV_list[MVempty$Model==MVmod_name][[1]] 
 covariate1=rownames(summary(MVmod)$coef_table)[2]
 covariate2=rownames(summary(MVmod)$coef_table)[3]
@@ -531,7 +531,7 @@ plot_MV2
 plot(Data_No_SG$Elevation20K_scale~Data_No_SG$HumanFootprint20K_scale)
 
 
-  
+
 #########################################
 ## Try logging the axes
 
@@ -579,7 +579,7 @@ ggplot(Elev2, aes(y=predicted+1, x=Elev_back_trans+1)) +
 
 #########################
 ### End here
-#################
+######################
 
 
 save.image(file = "GLMM_Offline_20220203.RData")
