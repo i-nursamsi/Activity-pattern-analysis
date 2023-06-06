@@ -1,4 +1,4 @@
-## RULES OF THUMB 
+## RULES OF THUMB IN was here!
 ## Divide # of obs by 25 and that's the max # of variables in a model 
 # Commpn palm civet has ~100 obs, so that means 5 total variables 
 # Landscape and Effort = 2 variables, so that leaves 3 more covariates available 
